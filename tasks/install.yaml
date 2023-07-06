@@ -9,6 +9,82 @@
     state: present
   when: "'vnode-0' in hostname.stdout"
 
+- name: Add HTCondor GPG key
+  become: yes
+  get_url:
+    url: https://research.cs.wisc.edu/htcondor/ubuntu/HTCondor-Release.gpg.key
+    dest: /tmp/HTCondor-Release.gpg.key
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Import HTCondor GPG key
+  become: yes
+  apt_key:
+    data: "{{ lookup('ansible.builtin.file', '/tmp/HTCondor-Release.gpg.key') }}"
+    state: present
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Add HTCondor repository to sources.list
+  become: yes
+  blockinfile:
+    path: /etc/apt/sources.list
+    block: |
+      deb http://research.cs.wisc.edu/htcondor/ubuntu/8.9/focal focal contrib
+      deb-src http://research.cs.wisc.edu/htcondor/ubuntu/8.9/focal focal contrib
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Update apt cache
+  become: yes
+  apt:
+    update_cache: yes
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Install condor and acl
+  become: yes
+  apt:
+    name: condor,acl
+    state: present
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Create condor_pool user
+  become: yes
+  user:
+    name: condor_pool
+    uid: 991
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Add condor_pool to condor group
+  become: yes
+  user:
+    name: condor_pool
+    groups: condor
+    append: yes
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Set ownership of /data directory
+  become: yes
+  file:
+    path: /data
+    owner: "1001"
+    group: "99"
+    recurse: yes
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Set permissions for /data directory
+  become: yes
+  file:
+    path: /data
+    mode: "g+rwxs"
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Set default ACL for /data directory
+  become: yes
+  acl:
+    path: /data
+    entity: g:99
+    permissions: rwx
+    default: yes
+  when: "'vnode-0' in hostname.stdout"
+
 - name: Install NFS client packages
   become: yes
   apt:
