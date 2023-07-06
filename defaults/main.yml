@@ -1,2 +1,6 @@
 ---
 # defaults file for ansible-role-htcondor-matlab
+server_host: vnode-0
+master_private_ip: ""
+network_cidr: 192.168.170.0/24
+nfs_mount_opts: defaults,noatime,_netdev,noauto,x-systemd.automount,rsize=32768,wsize=32768

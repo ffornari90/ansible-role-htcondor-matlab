@@ -1,0 +1,8 @@
+- name: Apply NFS exports template
+  become: yes
+  template:
+    src: templates/etc/exports.j2
+    dest: /etc/exports
+  notify:
+  - restart nfs service
+  when: ansible_facts['ansible_env']['HOSTNAME'] == "vnode-0.localdomain"

@@ -1,2 +1,7 @@
 ---
 # tasks file for ansible-role-htcondor-matlab
+- import_tasks: configure_env.yaml
+- import_tasks: install.yaml
+- import_tasks: service.yaml
+- import_tasks: configure_exports.yaml
+- import_tasks: mount_fs.yaml

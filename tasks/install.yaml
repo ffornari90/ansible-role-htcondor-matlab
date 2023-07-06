@@ -1,0 +1,5 @@
+- name: Install NFS packages
+  become: yes
+  apt:
+    name: nfs-server, nfs-client
+    state: present

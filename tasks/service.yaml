@@ -1,0 +1,7 @@
+- name: Enable and start nfs-server
+  become: yes
+  service:
+    name: nfs-server
+    enabled: yes
+    state: started
+  when: ansible_facts['ansible_env']['HOSTNAME'] == "vnode-0.localdomain"

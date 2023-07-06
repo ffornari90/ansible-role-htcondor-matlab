@@ -1,2 +1,7 @@
 ---
 # handlers file for ansible-role-htcondor-matlab
+- name: restart nfs service
+  become: yes
+  service:
+    name: nfs-server
+    state: restarted

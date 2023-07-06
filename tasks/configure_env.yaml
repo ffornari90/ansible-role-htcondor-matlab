@@ -1,0 +1,17 @@
+- name: Read the contents of /etc/hosts
+  become: yes
+  command: cat /etc/hosts
+  register: hosts_content
+
+- name: Remove lines containing "vnode-0" from the hosts file
+  become: yes
+  replace:
+    path: /etc/hosts
+    regexp: '^.*vnode-0.*$'
+    replace: ''
+
+- name: Add a line to /etc/hosts
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ master_private_ip }} vnode-0.localdomain vnode-0"
