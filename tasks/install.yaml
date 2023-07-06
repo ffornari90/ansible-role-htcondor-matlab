@@ -1,13 +1,17 @@
+- name: Get hostname
+  shell: hostname
+  register: hostname
+
 - name: Install NFS server packages
   become: yes
   apt:
     name: nfs-server
     state: present
-  when: "'vnode-0' in ansible_hostname"
+  when: "'vnode-0' in hostname.stdout"
 
 - name: Install NFS client packages
   become: yes
   apt:
     name: nfs-client
     state: present
-  when: "'vnode-0' not in ansible_hostname"
+  when: "'vnode-0' not in hostname.stdout"

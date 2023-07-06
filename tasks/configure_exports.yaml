@@ -5,4 +5,4 @@
     dest: /etc/exports
   notify:
   - restart nfs service
-  when: "'vnode-0' in ansible_hostname"
+  when: "'vnode-0' in hostname.stdout"

@@ -4,4 +4,4 @@
     name: nfs-server
     enabled: yes
     state: started
-  when: "'vnode-0' in ansible_hostname"
+  when: "'vnode-0' in hostname.stdout"
