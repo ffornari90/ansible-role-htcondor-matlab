@@ -1,7 +1,3 @@
-- name: Get hostname
-  shell: hostname
-  register: hostname
-
 - name: Install NFS server packages
   become: yes
   apt:

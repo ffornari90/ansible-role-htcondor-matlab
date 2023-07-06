@@ -1,3 +1,14 @@
+- name: Get hostname
+  shell: hostname
+  register: hostname
+
+- name: Get master private ip
+  get_url:
+    url: http://169.254.169.254/latest/meta-data/local-ipv4
+    dest: /tmp/master_private_ip
+  register: master_private_ip
+  when: "'vnode-0' in hostname.stdout"
+
 - name: Read the contents of /etc/hosts
   become: yes
   command: cat /etc/hosts
@@ -14,4 +25,4 @@
   become: yes
   lineinfile:
     path: /etc/hosts
-    line: "{{ master_private_ip }} vnode-0.localdomain vnode-0"
+    line: "master_private_ip.stdout vnode-0.localdomain vnode-0"
