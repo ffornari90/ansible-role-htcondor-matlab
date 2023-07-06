@@ -3,7 +3,7 @@
   file:
     path: /data
     state: directory
-  when: ansible_facts['ansible_env']['HOSTNAME'] != "vnode-0.localdomain"
+  when: "'vnode-0' not in ansible_hostname"
 
 - name: Mount NFS volume
   become: yes
@@ -13,4 +13,4 @@
     opts: "{{ nfs_mount_opts }}"
     state: mounted
     fstype: nfs
-  when: ansible_facts['ansible_env']['HOSTNAME'] != "vnode-0.localdomain"
+  when: "'vnode-0' not in ansible_hostname"

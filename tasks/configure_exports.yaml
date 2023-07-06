@@ -5,4 +5,4 @@
     dest: /etc/exports
   notify:
   - restart nfs service
-  when: ansible_facts['ansible_env']['HOSTNAME'] == "vnode-0.localdomain"
+  when: "'vnode-0' in ansible_hostname"
