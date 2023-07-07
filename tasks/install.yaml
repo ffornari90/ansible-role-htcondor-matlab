@@ -81,6 +81,27 @@
     default: yes
   when: "'vnode-0' in hostname.stdout"
 
+- name: Create HTCondor pool_password file
+  become: yes
+  template:
+    src: templates/etc/pwd/pool_password.j2
+    dest: /etc/pwd/pool_password
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Set file permissions on pool_password file
+  become: yes
+  file:
+    path: /etc/pwd/pool_password
+    mode: "0600"
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Create HTCondor conf
+  become: yes
+  template:
+    src: templates/etc/condor/config.d/01_DODAS_Custom.j2
+    dest: /etc/condor/config.d/01_DODAS_Custom
+  when: "'vnode-0' in hostname.stdout"
+
 - name: Install NFS client packages
   become: yes
   apt:

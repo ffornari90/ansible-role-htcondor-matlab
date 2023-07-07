@@ -9,10 +9,22 @@
   register: master_private_ip
   when: "'vnode-0' in hostname.stdout"
 
-- name: Read the contents of /etc/hosts
-  become: yes
-  command: cat /etc/hosts
-  register: hosts_content
+- name: Get master public ip
+  get_url:
+    url: http://169.254.169.254/latest/meta-data/public-ipv4
+    dest: /tmp/master_public_ip
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Read master public ip content 
+  slurp:
+    src: /tmp/master_public_ip
+  register: file_content
+  when: "'vnode-0' in hostname.stdout"
+
+- name: Store file content in a variable
+  set_fact:
+    master_public_ip: "{{ file_content.content | b64decode }}"
+  when: "'vnode-0' in hostname.stdout"
 
 - name: Remove lines containing "vnode-0" from the hosts file
   become: yes

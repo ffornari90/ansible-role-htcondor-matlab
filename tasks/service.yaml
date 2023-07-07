@@ -5,3 +5,11 @@
     enabled: yes
     state: started
   when: "'vnode-0' in hostname.stdout"
+
+- name: Enable and start condor
+  become: yes
+  service:
+    name: condor
+    enabled: yes
+    state: started
+  when: "'vnode-0' in hostname.stdout"
