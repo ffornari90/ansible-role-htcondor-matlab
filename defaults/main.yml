@@ -1,6 +1,6 @@
 ---
 # defaults file for ansible-role-htcondor-matlab
-condor_secret: secret
+cluster_secret: secret
 master_host: vnode-0
 target_port: 30618
 node_port: 30618
