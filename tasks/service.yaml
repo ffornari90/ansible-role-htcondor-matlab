@@ -4,7 +4,7 @@
     name: nfs-server
     enabled: yes
     state: started
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Enable and start condor
   become: yes
@@ -12,4 +12,4 @@
     name: condor
     enabled: yes
     state: started
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host

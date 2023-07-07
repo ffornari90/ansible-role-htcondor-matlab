@@ -5,4 +5,4 @@
     dest: /etc/exports
   notify:
   - restart nfs service
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host

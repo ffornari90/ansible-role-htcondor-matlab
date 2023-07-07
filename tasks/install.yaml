@@ -3,21 +3,21 @@
   apt:
     name: nfs-server
     state: present
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Add HTCondor GPG key
   become: yes
   get_url:
     url: https://research.cs.wisc.edu/htcondor/ubuntu/HTCondor-Release.gpg.key
     dest: /tmp/HTCondor-Release.gpg.key
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Import HTCondor GPG key
   become: yes
   apt_key:
     data: "{{ lookup('ansible.builtin.file', '/tmp/HTCondor-Release.gpg.key') }}"
     state: present
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Add HTCondor repository to sources.list
   become: yes
@@ -26,27 +26,27 @@
     block: |
       deb http://research.cs.wisc.edu/htcondor/ubuntu/8.9/focal focal contrib
       deb-src http://research.cs.wisc.edu/htcondor/ubuntu/8.9/focal focal contrib
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Update apt cache
   become: yes
   apt:
     update_cache: yes
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Install condor and acl
   become: yes
   apt:
     name: condor,acl
     state: present
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Create condor_pool user
   become: yes
   user:
     name: condor_pool
     uid: 991
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Add condor_pool to condor group
   become: yes
@@ -54,7 +54,7 @@
     name: condor_pool
     groups: condor
     append: yes
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Set ownership of /data directory
   become: yes
@@ -63,14 +63,14 @@
     owner: "1001"
     group: "99"
     recurse: yes
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Set permissions for /data directory
   become: yes
   file:
     path: /data
     mode: "g+rwxs"
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Set default ACL for /data directory
   become: yes
@@ -79,32 +79,68 @@
     entity: g:99
     permissions: rwx
     default: yes
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Create HTCondor pool_password file
   become: yes
   template:
     src: templates/etc/pwd/pool_password.j2
     dest: /etc/pwd/pool_password
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Set file permissions on pool_password file
   become: yes
   file:
     path: /etc/pwd/pool_password
     mode: "0600"
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
+
+- name: Create HTCondor directory for the user
+  become: yes
+  file:
+    path: "/home/{{ user_name }}/.condor"
+    state: directory
+  when: is_master_host
+
+- name: Create HTCondor user pool_password file
+  become: yes
+  template:
+    src: templates/etc/pwd/pool_password.j2
+    dest: "/home/{{ user_name }}/.condor/pool_password"
+  when: is_master_host
+
+- name: Set file permissions on pool_password file
+  become: yes
+  file:
+    path: "/home/{{ user_name }}/.condor/pool_password"
+    mode: "0600"
+  when: is_master_host
+
+- name: Create HTCondor user_config file
+  become: yes
+  template:
+    src: templates/user_config.j2
+    dest: "/home/{{ user_name }}/.condor/user_config"
+  when: is_master_host
+
+- name: Set HTCondor user directory owner
+  file:
+    path: "/home/{{ user_name }}/.condor"
+    owner: "{{ user_name }}"
+    state: directory
+    recurse: yes
+  when: is_master_host
 
 - name: Create HTCondor conf
   become: yes
   template:
     src: templates/etc/condor/config.d/01_DODAS_Custom.j2
     dest: /etc/condor/config.d/01_DODAS_Custom
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Install NFS client packages
   become: yes
   apt:
     name: nfs-client
     state: present
-  when: "'vnode-0' not in hostname.stdout"
+  when: is_not_master_host

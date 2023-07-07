@@ -2,29 +2,45 @@
   shell: hostname
   register: hostname
 
+- name: Get username
+  shell: "getent passwd 1001 | cut -d: -f1"
+  register: username
+
+- name: Check if master_host is in hostname
+  set_fact:
+    is_master_host: "{{ master_host in hostname.stdout }}"
+
+- name: Check if master_host is not in hostname
+  set_fact:
+    is_not_master_host: "{{ not is_master_host }}"
+
+- name: Store registered username value in a variable
+  set_fact:
+    user_name: "{{ username.stdout }}"
+
 - name: Get master private ip
   get_url:
     url: http://169.254.169.254/latest/meta-data/local-ipv4
     dest: /tmp/master_private_ip
   register: master_private_ip
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Get master public ip
   get_url:
     url: http://169.254.169.254/latest/meta-data/public-ipv4
     dest: /tmp/master_public_ip
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Read master public ip content 
   slurp:
     src: /tmp/master_public_ip
   register: file_content
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
-- name: Store file content in a variable
+- name: Store master public ip file content in a variable
   set_fact:
     master_public_ip: "{{ file_content.content | b64decode }}"
-  when: "'vnode-0' in hostname.stdout"
+  when: is_master_host
 
 - name: Remove lines containing "vnode-0" from the hosts file
   become: yes
