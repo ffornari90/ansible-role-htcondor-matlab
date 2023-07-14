@@ -5,10 +5,16 @@
     state: directory
   when: is_not_master_host
 
+- name: Install ansible-galaxy
+  become: yes
+  apt:
+    name: ansible
+    state: present
+  when: is_not_master_host
+
 - name: Ansible POSIX mount module installation
   become: yes
   shell: "ansible-galaxy collection install ansible.posix"
-  when: is_master_host
 
 - name: Mount NFS volume
   become: yes
