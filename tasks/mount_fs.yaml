@@ -7,10 +7,5 @@
 
 - name: Mount NFS volume
   become: yes
-  ansible.posix.mount:
-    src: "{{ master_host }}:/data"
-    path: /data
-    opts: "{{ nfs_mount_opts }}"
-    state: mounted
-    fstype: nfs
+  ansible.builtin.command: mount -t nfs -o "{{ nfs_mount_opts }}" "{{ master_host }}:/data" /data
   when: is_not_master_host
