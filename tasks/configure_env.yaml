@@ -18,7 +18,7 @@
   set_fact:
     user_name: "{{ username.stdout }}"
 
-- name: Extract network CIDR from master_private_ip
+- name: Extract network CIDR from master_public_ip
   set_fact:
-    network_cidr: "{{ master_private_ip.split('.')[:3] | join('.') ~ '.0/24' }}"
+    network_cidr: "{{ master_public_ip.split('.')[:3] | join('.') ~ '.0/24' }}"
   when: is_master_host
