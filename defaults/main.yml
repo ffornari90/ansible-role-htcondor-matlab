@@ -1,8 +1,8 @@
 ---
 # defaults file for ansible-role-htcondor-matlab
 cluster_secret: secret
-master_host: vnode-0
+master_host: vnode-0.localdomain
 target_port: 30618
 node_port: 30618
-network_cidr: 192.168.170.0/24
+network_cidr: vnode-*.localdomain
 nfs_mount_opts: defaults,noatime,_netdev,noauto,x-systemd.automount,rsize=32768,wsize=32768
