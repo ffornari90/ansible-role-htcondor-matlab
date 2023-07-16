@@ -7,5 +7,9 @@
 
 - name: Mount NFS volume
   become: yes
-  ansible.builtin.command: mount -t nfs -o "{{ nfs_mount_opts }}" "{{ master_private_ip }}:/data" /data
+  ansible.builtin.mount:
+    src: "{{ master_private_ip }}:/data"
+    path: /data
+    fstype: nfs
+    opts: "{{ nfs_mount_opts }}"
   when: is_not_master_host
