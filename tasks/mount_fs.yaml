@@ -12,4 +12,5 @@
     path: /data
     fstype: nfs
     opts: "{{ nfs_mount_opts }}"
+    state: mounted
   when: is_not_master_host
