@@ -31,7 +31,7 @@
     dest: /tmp/master_public_ip
   when: is_master_host
 
-- name: Read master public ip content 
+- name: Read master public ip content
   slurp:
     src: /tmp/master_public_ip
   register: file_content
@@ -42,15 +42,15 @@
     master_public_ip: "{{ file_content.content | b64decode }}"
   when: is_master_host
 
-- name: Remove lines containing "vnode-0" from the hosts file
-  become: yes
-  replace:
-    path: /etc/hosts
-    regexp: '^.*vnode-0.*$'
-    replace: ''
+#- name: Remove lines containing "vnode-0" from the hosts file
+#  become: yes
+#  replace:
+#    path: /etc/hosts
+#    regexp: '^.*vnode-0.*$'
+#    replace: ''
 
-- name: Add a line to /etc/hosts
-  become: yes
-  lineinfile:
-    path: /etc/hosts
-    line: "master_private_ip.stdout vnode-0.localdomain vnode-0"
+#- name: Add a line to /etc/hosts
+#  become: yes
+#  lineinfile:
+#    path: /etc/hosts
+#    line: "master_private_ip.stdout vnode-0.localdomain vnode-0"
