@@ -4,6 +4,7 @@ cluster_secret: secret
 master_host: vnode-0.localdomain
 target_port: 30618
 node_port: 30618
+master_private_ip: ""
 master_public_ip: ""
-network_cidr: vnode-*.localdomain
+network_cidr: ""
 nfs_mount_opts: defaults,noatime,_netdev,noauto,x-systemd.automount,rsize=32768,wsize=32768
