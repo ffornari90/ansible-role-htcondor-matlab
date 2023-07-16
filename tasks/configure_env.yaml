@@ -18,13 +18,6 @@
   set_fact:
     user_name: "{{ username.stdout }}"
 
-- name: Get master private ip
-  get_url:
-    url: http://169.254.169.254/latest/meta-data/local-ipv4
-    dest: /tmp/master_private_ip
-  register: master_private_ip
-  when: is_master_host
-
 - name: Get master public ip
   get_url:
     url: http://169.254.169.254/latest/meta-data/public-ipv4
@@ -41,19 +34,6 @@
   set_fact:
     master_public_ip: "{{ file_content.content | b64decode }}"
   when: is_master_host
-
-#- name: Remove lines containing "vnode-0" from the hosts file
-#  become: yes
-#  replace:
-#    path: /etc/hosts
-#    regexp: '^.*vnode-0.*$'
-#    replace: ''
-
-#- name: Add a line to /etc/hosts
-#  become: yes
-#  lineinfile:
-#    path: /etc/hosts
-#    line: "master_private_ip.stdout vnode-0.localdomain vnode-0"
 
 - name: Extract network CIDR from master_public_ip
   set_fact:
