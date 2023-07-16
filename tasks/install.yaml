@@ -81,6 +81,13 @@
     default: yes
   when: is_master_host
 
+- name: Create HTCondor pool_password directory
+  become: yes
+  file:
+    path: /etc/pwd
+    state: directory
+  when: is_master_host
+
 - name: Create HTCondor pool_password file
   become: yes
   template:
