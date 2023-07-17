@@ -70,6 +70,7 @@
   file:
     path: /data
     mode: "g+rwxs"
+    recurse: yes
   when: is_master_host
 
 - name: Set default ACL for /data directory
