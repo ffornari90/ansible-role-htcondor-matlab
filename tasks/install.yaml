@@ -56,12 +56,34 @@
     append: yes
   when: is_master_host
 
+- name: Change UID of user
+  become: yes
+  user:
+    name: "{{ user_name }}"
+    uid: 99
+
+- name: Update file ownership
+  become: yes
+  find:
+    paths: /
+    owner: 99
+    uid: 1001
+  register: files_to_update
+
+- name: Change ownership of files and directories
+  become: yes
+  file:
+    path: "{{ item.path }}"
+    owner: 99
+    uid: 1001
+  loop: "{{ files_to_update.files }}"
+
 - name: Set ownership of /data directory
   become: yes
   file:
     path: /data
-    owner: "1001"
-    group: "99"
+    owner: "99"
+    group: "1001"
     recurse: yes
   when: is_master_host
 
@@ -71,15 +93,6 @@
     path: /data
     mode: "g+rwxs"
     recurse: yes
-  when: is_master_host
-
-- name: Set default ACL for /data directory
-  become: yes
-  acl:
-    path: /data
-    entity: g:99
-    permissions: rwx
-    default: yes
   when: is_master_host
 
 - name: Create HTCondor pool_password directory
