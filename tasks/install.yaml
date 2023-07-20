@@ -34,10 +34,10 @@
     update_cache: yes
   when: is_master_host
 
-- name: Install condor and acl
+- name: Install condor
   become: yes
   apt:
-    name: condor,acl
+    name: condor
     state: present
   when: is_master_host
 
