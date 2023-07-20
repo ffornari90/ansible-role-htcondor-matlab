@@ -62,7 +62,7 @@
 
 - name: Find files and directories owned by UID 1001
   become: yes
-  shell: find / -uid 1001
+  shell: find / -xdev -uid 1001
   register: files_to_update
   when: is_master_host
 
