@@ -5,11 +5,3 @@
     enabled: yes
     state: started
   when: is_master_host
-
-- name: Enable and start condor
-  become: yes
-  service:
-    name: condor
-    enabled: yes
-    state: started
-  when: is_master_host
