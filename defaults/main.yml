@@ -7,4 +7,5 @@ node_port: 30618
 master_private_ip: ""
 master_public_ip: ""
 network_cidr: ""
+client_cidr: ""
 nfs_mount_opts: defaults,noatime,_netdev,noauto,x-systemd.automount,acl,rsize=32768,wsize=32768
